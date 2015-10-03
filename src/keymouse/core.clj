@@ -40,6 +40,12 @@
           NativeKeyEvent/VC_DOWN
           (moveMouse (fn [x y] [x (+ y 2)]))
 
+          NativeKeyEvent/VC_RIGHT
+          (moveMouse (fn [x y] [(+ x 2) y]))
+
+          NativeKeyEvent/VC_LEFT
+          (moveMouse (fn [x y] [(- x 2) y]))
+
           (println "unmatched" key))))
     (nativeKeyReleased [this evt]
       (prn evt))
