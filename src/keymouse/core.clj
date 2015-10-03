@@ -11,23 +11,36 @@
 
 (def robot (Robot.))
 
+(def enabled true)
+
 (def mousePos [0 0])
 (defn moveMouse
-  ([] (moveMouse mousePos))
-  ([pos] (let [[x y] pos] (moveMouse x y)))
+  ([] (moveMouse (let [[x y] mousePos] (moveMouse x y))))
+  ([f] (let [[x y] mousePos
+             [x' y'] (f x y)]
+         (moveMouse x' y')))
   ([x y] (let [x (if (< x 0) 0 x)
                y (if (< y 0) 0 y)]
-           (do
-             (def mousePos [x y])
-             (.mouseMove robot x y)))))
+           (if enabled
+             (do
+               (def mousePos [x y])
+               (.mouseMove robot x y))))))
 
 (def keyListener
   (reify NativeKeyListener
     (nativeKeyPressed [this evt]
       (let [key (.getKeyCode evt)]
-        (if (= key (NativeKeyEvent/VC_UP))
-          (let [[x y] mousePos]
-            (moveMouse x (- y 1))))))
+        (condp = key
+          NativeKeyEvent/VC_BACK_SLASH
+          (def enabled (not enabled))
+
+          NativeKeyEvent/VC_UP
+          (moveMouse (fn [x y] [x (- y 2)]))
+
+          NativeKeyEvent/VC_DOWN
+          (moveMouse (fn [x y] [x (+ y 2)]))
+
+          (println "unmatched" key))))
     (nativeKeyReleased [this evt]
       (prn evt))
     (nativeKeyTyped [this evt]
