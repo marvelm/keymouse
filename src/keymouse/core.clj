@@ -35,16 +35,16 @@
           (def enabled (not enabled))
 
           NativeKeyEvent/VC_UP
-          (moveMouse (fn [x y] [x (- y 2)]))
+          (moveMouse (fn [x y] [x (- y 5)]))
 
           NativeKeyEvent/VC_DOWN
-          (moveMouse (fn [x y] [x (+ y 2)]))
+          (moveMouse (fn [x y] [x (+ y 5)]))
 
           NativeKeyEvent/VC_RIGHT
-          (moveMouse (fn [x y] [(+ x 2) y]))
+          (moveMouse (fn [x y] [(+ x 5) y]))
 
           NativeKeyEvent/VC_LEFT
-          (moveMouse (fn [x y] [(- x 2) y]))
+          (moveMouse (fn [x y] [(- x 5) y]))
 
           (println "unmatched" key))))
     (nativeKeyReleased [this evt]
