@@ -27,12 +27,18 @@
                (def mousePos [x y])
                (.mouseMove robot x y))))))
 
-(defn mouseClick
+(defn leftClick
   ([] (if enabled
         (do
           (moveMouse)
           (.mousePress robot InputEvent/BUTTON1_MASK)
           (.mouseRelease robot InputEvent/BUTTON1_MASK)))))
+(defn rightClick
+  ([] (if enabled
+        (do
+          (moveMouse)
+          (.mousePress robot InputEvent/BUTTON3_MASK)
+          (.mouseRelease robot InputEvent/BUTTON3_MASK)))))
 
 (def keyListener
   (reify NativeKeyListener
@@ -42,20 +48,23 @@
           NativeKeyEvent/VC_BACK_SLASH
           (def enabled (not enabled))
 
-          NativeKeyEvent/VC_UP
+          NativeKeyEvent/VC_W
           (moveMouse (fn [x y] [x (- y 5)]))
 
-          NativeKeyEvent/VC_DOWN
+          NativeKeyEvent/VC_S
           (moveMouse (fn [x y] [x (+ y 5)]))
 
-          NativeKeyEvent/VC_RIGHT
+          NativeKeyEvent/VC_D
           (moveMouse (fn [x y] [(+ x 5) y]))
 
-          NativeKeyEvent/VC_LEFT
+          NativeKeyEvent/VC_A
           (moveMouse (fn [x y] [(- x 5) y]))
 
           NativeKeyEvent/VC_SEMICOLON
-          (mouseClick)
+          (leftClick)
+
+          NativeKeyEvent/VC_QUOTE
+          (rightClick)
 
           (println "unmatched" key))))
     (nativeKeyReleased [this evt]
