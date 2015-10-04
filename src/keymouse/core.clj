@@ -7,7 +7,8 @@
            (org.jnativehook.mouse NativeMouseEvent
                                   NativeMouseInputListener)
 
-           (java.awt Robot)))
+           (java.awt Robot)
+           (java.awt.event InputEvent)))
 
 (def robot (Robot.))
 
@@ -15,7 +16,7 @@
 
 (def mousePos [0 0])
 (defn moveMouse
-  ([] (moveMouse (let [[x y] mousePos] (moveMouse x y))))
+  ([] (let [[x y] mousePos] (moveMouse x y)))
   ([f] (let [[x y] mousePos
              [x' y'] (f x y)]
          (moveMouse x' y')))
@@ -25,6 +26,13 @@
              (do
                (def mousePos [x y])
                (.mouseMove robot x y))))))
+
+(defn mouseClick
+  ([] (if enabled
+        (do
+          (moveMouse)
+          (.mousePress robot InputEvent/BUTTON1_MASK)
+          (.mouseRelease robot InputEvent/BUTTON1_MASK)))))
 
 (def keyListener
   (reify NativeKeyListener
@@ -45,6 +53,9 @@
 
           NativeKeyEvent/VC_LEFT
           (moveMouse (fn [x y] [(- x 5) y]))
+
+          NativeKeyEvent/VC_SEMICOLON
+          (mouseClick)
 
           (println "unmatched" key))))
     (nativeKeyReleased [this evt]
