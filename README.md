@@ -1,6 +1,8 @@
 # keymouse
 
 keymouse is allows you to control your mouse with your keyboard.
-Run the jar and use the arrow keys to move the mouse.
-Use "\" to toggle the application.
-Use ";" to click.
+
+### Usage
+[Download](https://github.com/marvelm/keymouse/releases/download/0.1.0-SNAPSHOT/keymouse-0.1.0-SNAPSHOT-standalone.jar) and run the jar.
+
+Use the arrow keys to move the mouse, "\" to toggle the application and ";" to click.
