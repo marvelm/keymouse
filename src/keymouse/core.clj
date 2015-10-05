@@ -16,8 +16,12 @@
 
 (def mousePos [0 0])
 (defn moveMouse
+  "`f` is a function that transforms the current mousePos
+  to return a vector, `[x y]`
+
+  It is safe for [x y] arguments to be negative"
   ([] (let [[x y] mousePos] (moveMouse x y)))
-  ([f] (let [[x y] mousePos
+  ([f] (let [[x  y]  mousePos
              [x' y'] (f x y)]
          (moveMouse x' y')))
   ([x y] (let [x (if (< x 0) 0 x)
@@ -27,18 +31,21 @@
                (def mousePos [x y])
                (.mouseMove robot x y))))))
 
+;; In this function it is necessary to move the mouse before clicking
+;; because java.awt.Robot clicks wherever it thinks the mouse is.
+;; moveMouse synchronizes the robot's mouse position to mousePos.
 (defn leftClick
-  ([] (if enabled
-        (do
-          (moveMouse)
-          (.mousePress robot InputEvent/BUTTON1_MASK)
-          (.mouseRelease robot InputEvent/BUTTON1_MASK)))))
+  [] (if enabled
+       (do
+         (moveMouse)
+         (.mousePress robot InputEvent/BUTTON1_MASK)
+         (.mouseRelease robot InputEvent/BUTTON1_MASK))))
 (defn rightClick
-  ([] (if enabled
-        (do
-          (moveMouse)
-          (.mousePress robot InputEvent/BUTTON3_MASK)
-          (.mouseRelease robot InputEvent/BUTTON3_MASK)))))
+  [](if enabled
+      (do
+        (moveMouse)
+        (.mousePress robot InputEvent/BUTTON3_MASK)
+        (.mouseRelease robot InputEvent/BUTTON3_MASK))))
 
 (def keyListener
   (reify NativeKeyListener
@@ -51,14 +58,14 @@
           NativeKeyEvent/VC_W
           (moveMouse (fn [x y] [x (- y 5)]))
 
+          NativeKeyEvent/VC_A
+          (moveMouse (fn [x y] [(- x 5) y]))
+
           NativeKeyEvent/VC_S
           (moveMouse (fn [x y] [x (+ y 5)]))
 
           NativeKeyEvent/VC_D
           (moveMouse (fn [x y] [(+ x 5) y]))
-
-          NativeKeyEvent/VC_A
-          (moveMouse (fn [x y] [(- x 5) y]))
 
           NativeKeyEvent/VC_SEMICOLON
           (leftClick)
@@ -92,5 +99,4 @@
   (moveMouse 0 0)
   (GlobalScreen/registerNativeHook)
   (GlobalScreen/addNativeKeyListener keyListener)
-  (GlobalScreen/addNativeMouseMotionListener mouseListener)
-  (println "Hello, World!"))
+  (GlobalScreen/addNativeMouseMotionListener mouseListener))
